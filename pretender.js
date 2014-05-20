@@ -65,6 +65,11 @@ Pretender.prototype = {
       request.respond.apply(request, handler.handler(request));
     } else if (this.passthroughUnhandledRequests) {
       var req = new this._nativeXMLHttpRequest();
+      req.onreadystatechange = function(){
+        request.readyState = req.readyState;
+        request.responseText = req.responseText;
+        request.onreadystatechange.apply(request, arguments);
+      };
       req.onload = request.onload;
       req.open(request.method, request.url, request.async);
       req.send.apply(req, sendArgs);
